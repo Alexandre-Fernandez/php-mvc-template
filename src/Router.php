@@ -4,6 +4,7 @@ namespace App;
 use AltoRouter;
 
 abstract class Router {
+	private const CONTROLLER_CLASS_NAME = "Controller";
 	private object $controller;
 	private string $component;
 	private bool $relativeRouting;
@@ -14,8 +15,8 @@ abstract class Router {
 	 * @param  string $relativeRouting if set to true, the routes will be relative to the namespace (e.g. \App\Users -> "localhost/users/$route")
 	 * @param  string $controllerClass name of the Controller class in the namespace
 	 */
-	public function __construct(string $namespace, bool $relativeRouting = true, string $controllerClass = "Controller") {
-		$controller = "$namespace\\$controllerClass";
+	public function __construct(string $namespace, bool $relativeRouting = true) {
+		$controller = "$namespace\\" . self::CONTROLLER_CLASS_NAME;
 		if(!class_exists($controller)) throw new \Exception("$controller doesn't exist");
 		$this->relativeRouting = $relativeRouting;
 		$this->component = array_slice(explode("\\", $namespace,), -1)[0];
