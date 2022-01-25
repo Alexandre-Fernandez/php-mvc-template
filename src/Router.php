@@ -30,7 +30,10 @@ abstract class Router {
 	protected function run(): void {
 		$match = $this->router->match();
 		if(is_array($match)) call_user_func($match["target"], $match["params"]);
-		else {header("location: /404");	exit();}
+		else {
+			header("location: /" . strtolower(\App\App::HTTP_404_COMPONENT_NAME)); 
+			exit();
+		}
 	}
 
 	protected function get(string $route, string $controllerMethod): self {
