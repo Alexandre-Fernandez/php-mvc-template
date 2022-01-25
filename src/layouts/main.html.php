@@ -7,8 +7,8 @@
 	<title><?= $title ?? "Document" ?></title>
 </head>
 <body>
-	<?php include "src/layouts/elements/header.html.php"; ?>
+	<?php include ROOT . "/src/layouts/elements/header.html.php"; ?>
 	<?= $content ?? "" ?>
-	<?php include "src/layouts/elements/footer.html.php"; ?>
+	<?php include ROOT . "/src/layouts/elements/footer.html.php"; ?>
 </body>
 </html>
