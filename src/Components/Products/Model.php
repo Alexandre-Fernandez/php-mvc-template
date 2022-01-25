@@ -2,10 +2,15 @@
 namespace App\Components\Products;
 
 class Model extends \App\Model {
-	public function retrieveProducts() {
+	public function retrieveProducts(
+		int $offset, 
+		int $count, 
+		string $orderBy = "name", 
+		string $sort = "ASC"
+	) {
 		try {
 			$query = $this->pdo->query(
-				"SELECT name, price FROM products",
+				"SELECT name, price FROM products ORDER BY $orderBy $sort LIMIT $offset, $count",
 				\PDO::FETCH_CLASS,
 				"App\\Components\\Products\\Product"
 			);

@@ -27,7 +27,7 @@ function getRouter(
 ): object {
 	// getting component name
 	$uri = $_SERVER["REQUEST_URI"] ?? "/";
-	$uri = preg_split("/[\/.]/", strtolower($uri));
+	$uri = preg_split("/[\/.?]/", strtolower($uri));
 	$component = $homeComponent;
 	if(!empty($uri[1]) && $uri[1] !== "index") {
 		$uri[1][0] = strtoupper($uri[1][0]);
