@@ -31,7 +31,7 @@
 		<?php foreach($products as $product): ?>
 			<tr>
 				<td><?= htmlentities($product->name) ?></td>
-				<td><?= htmlentities($product->price) ?></td>
+				<td><?= number_format(htmlentities($product->price), 0, "", " ") ?> €</td>
 			</tr>
 		<?php endforeach; ?>
 		</tbody>

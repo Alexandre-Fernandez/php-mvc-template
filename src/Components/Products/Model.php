@@ -5,8 +5,8 @@ class Model extends \App\Model {
 	public function retrieveProducts(
 		int $offset, 
 		int $count, 
-		string $orderBy = "name", 
-		string $sort = "ASC"
+		?string $orderBy = "name", 
+		?string $sort = "ASC"
 	) {
 		try {
 			if(!array_search($orderBy, ["name", "price"])) $orderBy = "name";
