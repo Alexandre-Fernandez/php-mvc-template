@@ -9,6 +9,8 @@ class Model extends \App\Model {
 		string $sort = "ASC"
 	) {
 		try {
+			if($orderBy !== "name" || $orderBy !== "price") $orderBy = "name";
+			if($sort !== "ASC" || $sort !== "DESC") $sort = "ASC";
 			$query = $this->pdo->query(
 				"SELECT name, price FROM products ORDER BY $orderBy $sort LIMIT $offset, $count",
 				\PDO::FETCH_CLASS,

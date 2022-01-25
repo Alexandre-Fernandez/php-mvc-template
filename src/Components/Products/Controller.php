@@ -5,8 +5,8 @@ class Controller extends \App\Controller {
 	public function getProducts() {
 		$productsPerPage = 20;
 		$page = (int)$_GET["p"] ?? 0;
-		$orderBy = $_GET["orderBy"] ? htmlentities($_GET["orderBy"]) : "name";
-		$sort = $_GET["sort"] ? htmlentities($_GET["sort"]) : "ASC";
+		$orderBy = $_GET["orderBy"] ?? "name";
+		$sort = $_GET["sort"] ?? "ASC";
 
 		$products = $this->callModel("retrieveProducts", [
 			"offset" => $productsPerPage * $page,
