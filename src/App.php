@@ -19,7 +19,8 @@ class App {
 			$_ENV["DB_USER"], 
 			$_ENV["DB_PASSWORD"]
 		);
-		self::getRouter($_SERVER["REQUEST_URI"] ?? "/")->run($_GET, $_POST);
+		self::getRouter($_SERVER["REQUEST_URI"] ?? "/")
+		->run($_GET, $_POST);
 	}
 
 	private static function initDatabase(
