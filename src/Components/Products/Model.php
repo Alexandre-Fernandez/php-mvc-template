@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 namespace App\Components\Products;
 
-class Model extends \App\Model {
+class Model extends \App\Lib\Model {
 	public function retrieveProducts(
 		int $offset, 
 		int $count, 

@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 namespace App\Components\Products;
 
-class Controller extends \App\Controller {
-	public function getProducts() {
+class Controller extends \App\Lib\Controller {
+	public function getProducts(array $params = [], array $query = []) {
 		$productsPerPage = 20;
-		$page = (int)$_GET["p"] ?? 0;
-		$orderBy = $_GET["orderBy"] ?? "name";
-		$sort = $_GET["sort"] ?? "ASC";
+		$page = (int)($query["p"] ?? 0);
+		$orderBy = $query["orderBy"] ?? "name";
+		$sort = $query["sort"] ?? "ASC";
 
 		$products = $this->callModel("retrieveProducts", [
 			"offset" => $productsPerPage * $page,
@@ -27,7 +27,8 @@ class Controller extends \App\Controller {
 			"page" => $page,
 			"isLastPage" => $isLastPage,
 			"orderBy" => $orderBy,
-			"sort" => $sort
+			"sort" => $sort,
+			"query" => $query
 		]);
 	}
 }

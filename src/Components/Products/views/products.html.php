@@ -1,6 +1,6 @@
 <?php 
-	function createProductUri(array $params) {
-		$params = array_merge($_GET, $params);
+	function createProductUri(array $prevParams, array $params) {
+		$params = array_merge($prevParams, $params);
 		$uri = "/products";
 		foreach ($params as $key => $param) {
 			$uri .= "&$key=$param";
@@ -17,11 +17,11 @@
 	<table>
 		<thead>
 			<tr>
-				<th><a href=<?= createProductUri([
+				<th><a href=<?= createProductUri($query, [
 					"orderBy" => "name", 
 					"sort" => $orderBy === "name" && $sort === "ASC" ? "DESC" : "ASC"
 				]) ?>>Name</a></th>
-				<th><a href=<?= createProductUri([
+				<th><a href=<?= createProductUri($query, [
 					"orderBy" => "price", 
 					"sort" => $orderBy === "price" && $sort === "ASC" ? "DESC" : "ASC"
 				]) ?>>Price</a></th>
@@ -39,12 +39,12 @@
 			<tr>
 				<td>
 				<?php if($page > 0): ?>
-					<a href=<?= createProductUri(["p" => $page - 1]) ?>>Previous</a>
+					<a href=<?= createProductUri($query, ["p" => $page - 1]) ?>>Previous</a>
 				<?php endif; ?>
 				</td>
 				<td>
 				<?php if(!$isLastPage): ?>
-					<a href=<?= createProductUri(["p" => $page + 1]) ?>>Next</a>
+					<a href=<?= createProductUri($query, ["p" => $page + 1]) ?>>Next</a>
 				<?php endif; ?>
 				</td>
 			</tr>

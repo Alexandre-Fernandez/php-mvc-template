@@ -3,21 +3,39 @@ namespace App;
 
 class App {
 	public const NAMESPACE = __NAMESPACE__;
-	public const HOME_COMPONENT_NAME = "Home";
+	public const LAYOUTS_DIR = __DIR__ . "/layouts";
+	public const VIEWS_DIR_NAME = "views";
+	public const COMPONENTS_NAMESPACE = "Components";
 	public const HTTP_404_COMPONENT_NAME = "Http404";
-	private const COMPONENTS_NAMESPACE = "Components";
-	private const ROUTER_CLASS_NAME = "Router";
+	public const HOME_COMPONENT_NAME = "Home";
+	public const MODEL_CLASS_NAME = "Model";
+	public const CONTROLLER_CLASS_NAME = "Controller";
+	public const ROUTER_CLASS_NAME = "Router";
 
 	public static function run() {
-		self::getRouter();
+		self::initDatabase(
+			$_ENV["DB_HOST"], 
+			$_ENV["DB_NAME"], 
+			$_ENV["DB_USER"], 
+			$_ENV["DB_PASSWORD"]
+		);
+		self::getRouter($_SERVER["REQUEST_URI"] ?? "/")->run($_GET, $_POST);
+	}
+
+	private static function initDatabase(
+		string $hostname, 
+		string $name, 
+		string $username, 
+		string $password
+	) {
+		Database::init($hostname, $name, $username, $password);
 	}
 
 	/**
-	 * @return object Router object corresponding to the current $_SERVER["REQUEST_URI"]
+	 * @return object Router object corresponding to $uri
 	 */
-	private static function getRouter() {
+	private static function getRouter(string $uri): object {
 		// getting component name
-		$uri = $_SERVER["REQUEST_URI"] ?? "/";
 		$uri = preg_split("/[\/.?]/", strtolower($uri));
 		$component = self::HOME_COMPONENT_NAME;
 		if(!empty($uri[1]) && $uri[1] !== "index") {
@@ -32,6 +50,6 @@ class App {
 			$router = "$namespace\\" . self::ROUTER_CLASS_NAME;
 		}
 		$relativeRouting = !($component === self::HOME_COMPONENT_NAME);
-		return new $router($namespace, $relativeRouting);
+		return new $router($namespace, self::CONTROLLER_CLASS_NAME, $relativeRouting);
 	}
 }

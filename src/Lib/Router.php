@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
-namespace App;
+namespace App\Lib;
 
 use AltoRouter;
+use \App\App;
 
 abstract class Router {
-	private const CONTROLLER_CLASS_NAME = "Controller";
 	private object $controller;
 	private string $component;
 	private bool $relativeRouting;
@@ -15,26 +15,33 @@ abstract class Router {
 	 * @param  string $relativeRouting if set to true, the routes will be relative to the namespace (e.g. \App\Users -> "localhost/users/$route")
 	 * @param  string $controllerClass name of the Controller class in the namespace
 	 */
-	public function __construct(string $namespace, bool $relativeRouting = true) {
-		$controller = "$namespace\\" . self::CONTROLLER_CLASS_NAME;
+	public function __construct(string $namespace, string $controllerClassName, bool $relativeRouting = true) {
+		$controller = "$namespace\\" . $controllerClassName;
 		if(!class_exists($controller)) throw new \Exception("$controller doesn't exist");
 		$this->relativeRouting = $relativeRouting;
 		$this->component = array_slice(explode("\\", $namespace,), -1)[0];
-		$this->controller = new $controller($namespace);
+		$this->controller = new $controller(
+			$namespace, 
+			App::LAYOUTS_DIR, 
+			App::VIEWS_DIR_NAME, 
+			App::MODEL_CLASS_NAME
+		);
 		$this->router = new AltoRouter();
 		$this->init();
 	}
 
-	abstract protected function init(): void;
-
-	protected function run(): void {
+	public function run(array $query, array $body): void {
 		$match = $this->router->match();
-		if(is_array($match)) call_user_func($match["target"], $match["params"]);
+		if(is_array($match)) call_user_func($match["target"], [
+			$match["params"], $query, $body
+		]);
 		else {
 			header("location: /" . strtolower(\App\App::HTTP_404_COMPONENT_NAME)); 
 			exit();
 		}
 	}
+
+	abstract protected function init(): void;
 
 	protected function get(string $route, string $controllerMethod): self {
 		return $this->addRoute("GET", $route, $controllerMethod);

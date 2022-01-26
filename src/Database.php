@@ -6,18 +6,19 @@ use \PDO;
 class Database {
 	private static $pdo;
 
-	public static function getPdo() {
-		if(!self::$pdo) {
-			self::$pdo = new PDO(
-				"mysql:host={$_ENV['DB_HOST']};dbname={$_ENV['DB_NAME']}", 
-				$_ENV["DB_USER"], 
-				$_ENV["DB_PASSWORD"], 
-				[
-					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-					PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ
-				]
-			);
-		}
+	public static function init(
+		string $hostname, 
+		string $name, 
+		string $username, 
+		string $password
+	) {
+		self::$pdo = new PDO("mysql:host=$hostname;dbname=$name", $username, $password, [
+			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+			PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ
+		]);
+	}
+
+	public static function getPdo(): PDO {
 		return self::$pdo;
 	}
 }
