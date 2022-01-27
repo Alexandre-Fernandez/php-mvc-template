@@ -13,7 +13,7 @@ class App {
 	public const ROUTER_CLASS_NAME = "Router";
 
 	public static function run() {
-		self::initDatabase(
+		Database::init(
 			$_ENV["DB_HOST"], 
 			$_ENV["DB_NAME"], 
 			$_ENV["DB_USER"], 
@@ -23,34 +23,32 @@ class App {
 		->run($_GET, $_POST);
 	}
 
-	private static function initDatabase(
-		string $hostname, 
-		string $name, 
-		string $username, 
-		string $password
-	) {
-		Database::init($hostname, $name, $username, $password);
-	}
-
 	/**
 	 * @return object Router object corresponding to $uri
 	 */
 	private static function getRouter(string $uri): object {
-		// getting component name
 		$uri = preg_split("/[\/.?]/", strtolower($uri));
-		$component = self::HOME_COMPONENT_NAME;
-		if(!empty($uri[1]) && $uri[1] !== "index") {
+		$relativeRouting = true;
+		$components = self::NAMESPACE . "\\" . self::COMPONENTS_NAMESPACE . "\\";
+		$component = $components;
+		if(empty($uri[1]) || $uri[1] === "index") { // home component
+			$relativeRouting = false;
+			$component .= self::HOME_COMPONENT_NAME;
+		}
+		else { // other component (including 404)
 			$uri[1][0] = strtoupper($uri[1][0]);
-			$component = "$uri[1]";
+			$component .= $uri[1];
 		}
-		// getting the component's router
-		$namespace = self::NAMESPACE . "\\" . self::COMPONENTS_NAMESPACE . "\\$component";
-		$router = "$namespace\\" . self::ROUTER_CLASS_NAME;
+		$router = "$component\\" . self::ROUTER_CLASS_NAME;
 		if(!class_exists($router)) {
-			$namespace = self::NAMESPACE . "\\" . self::COMPONENTS_NAMESPACE . "\\" . self::HTTP_404_COMPONENT_NAME;
-			$router = "$namespace\\" . self::ROUTER_CLASS_NAME;
+			$component = $components . self::HTTP_404_COMPONENT_NAME;
+			$router = "$component\\" . self::ROUTER_CLASS_NAME;
+			if(!class_exists($router)) { // echo if no 404 component 
+				echo "Error 404: Page not found";
+				exit();
+			}
+			return new $router($component, self::CONTROLLER_CLASS_NAME, $relativeRouting);
 		}
-		$relativeRouting = !($component === self::HOME_COMPONENT_NAME);
-		return new $router($namespace, self::CONTROLLER_CLASS_NAME, $relativeRouting);
+		return new $router($component, self::CONTROLLER_CLASS_NAME, $relativeRouting);
 	}
 }

@@ -2,7 +2,7 @@
 namespace App\Components\Products;
 
 class Router extends \App\Lib\Router {
-	protected function init(): void {
+	protected function addRoutes(): void {
 		$this->get("/", "getProducts");
 	}
 }

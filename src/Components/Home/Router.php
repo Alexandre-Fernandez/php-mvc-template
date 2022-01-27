@@ -2,7 +2,7 @@
 namespace App\Components\Home;
 
 class Router extends \App\Lib\Router {
-	protected function init(): void {
+	protected function addRoutes(): void {
 		$this->get("/", "getHome");
 	}
 }

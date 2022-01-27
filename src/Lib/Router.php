@@ -15,20 +15,24 @@ abstract class Router {
 	 * @param  string $relativeRouting if set to true, the routes will be relative to the namespace (e.g. \App\Users -> "localhost/users/$route")
 	 * @param  string $controllerClass name of the Controller class in the namespace
 	 */
-	public function __construct(string $namespace, string $controllerClassName, bool $relativeRouting = true) {
+	public function __construct(
+		string $namespace, 
+		string $controllerClassName, 
+		bool $relativeRouting = true, 
+		string $layoutsDir = App::LAYOUTS_DIR,
+		string $viewsDirName = App::VIEWS_DIR_NAME, 
+		string $modelClassName = App::MODEL_CLASS_NAME
+	) {
 		$controller = "$namespace\\" . $controllerClassName;
 		if(!class_exists($controller)) throw new \Exception("$controller doesn't exist");
 		$this->relativeRouting = $relativeRouting;
 		$this->component = array_slice(explode("\\", $namespace,), -1)[0];
-		$this->controller = new $controller(
-			$namespace, 
-			App::LAYOUTS_DIR, 
-			App::VIEWS_DIR_NAME, 
-			App::MODEL_CLASS_NAME
-		);
+		$this->controller = new $controller($namespace, $layoutsDir, $viewsDirName, $modelClassName);
 		$this->router = new AltoRouter();
-		$this->init();
+		$this->addRoutes();
 	}
+
+	abstract protected function addRoutes(): void;
 
 	public function run(array $query, array $body): void {
 		$match = $this->router->match();
@@ -40,8 +44,6 @@ abstract class Router {
 			exit();
 		}
 	}
-
-	abstract protected function init(): void;
 
 	protected function get(string $route, string $controllerMethod): self {
 		return $this->addRoute("GET", $route, $controllerMethod);
