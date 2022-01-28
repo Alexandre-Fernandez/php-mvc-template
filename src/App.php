@@ -13,6 +13,7 @@ class App {
 	public const ROUTER_CLASS_NAME = "Router";
 
 	public static function run() {
+		Session::init();
 		Database::init(
 			$_ENV["DB_HOST"], 
 			$_ENV["DB_NAME"], 
@@ -23,14 +24,25 @@ class App {
 		->run($_GET, $_POST);
 	}
 
+	public static function getComponentsStr(): string {
+		return self::NAMESPACE . "\\" . self::COMPONENTS_NAMESPACE;
+	}
+
+	public static function getComponentModelStr(string $component): string {
+		return self::getComponentsStr() . "\\$component\\" . self::MODEL_CLASS_NAME;
+	}
+
+	public static function getComponentControllerStr(string $component): string {
+		return self::getComponentsStr() . "\\$component\\" . self::CONTROLLER_CLASS_NAME;
+	}
+
 	/**
 	 * @return object Router object corresponding to $uri
 	 */
 	private static function getRouter(string $uri): object {
 		$uri = preg_split("/[\/.?]/", strtolower($uri));
 		$relativeRouting = true;
-		$components = self::NAMESPACE . "\\" . self::COMPONENTS_NAMESPACE . "\\";
-		$component = $components;
+		$component = self::getComponentsStr() . "\\";
 		if(empty($uri[1]) || $uri[1] === "index") { // home component
 			$relativeRouting = false;
 			$component .= self::HOME_COMPONENT_NAME;
@@ -41,7 +53,7 @@ class App {
 		}
 		$router = "$component\\" . self::ROUTER_CLASS_NAME;
 		if(!class_exists($router)) {
-			$component = $components . self::HTTP_404_COMPONENT_NAME;
+			$component = self::getComponentsStr() . "\\" . self::HTTP_404_COMPONENT_NAME;
 			$router = "$component\\" . self::ROUTER_CLASS_NAME;
 			if(!class_exists($router)) { // echo if no 404 component 
 				echo "Error 404: Page not found";
