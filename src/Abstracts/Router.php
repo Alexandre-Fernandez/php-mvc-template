@@ -1,5 +1,5 @@
 <?php declare(strict_types=1);
-namespace App\Lib;
+namespace App\Abstracts;
 
 use AltoRouter;
 use \App\App;

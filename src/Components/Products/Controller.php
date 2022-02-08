@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 namespace App\Components\Products;
 
-class Controller extends \App\Lib\Controller {
+class Controller extends \App\Abstracts\Controller {
 	public function getProducts(array $params = [], array $query = []) {
 		$productsPerPage = 20;
 		$page = (int)($query["p"] ?? 0);

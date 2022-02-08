@@ -13,7 +13,7 @@ class App {
 	public const ROUTER_CLASS_NAME = "Router";
 
 	public static function run() {
-		Session::init();
+		//Session::init();
 		Database::init(
 			$_ENV["DB_HOST"], 
 			$_ENV["DB_NAME"], 

@@ -10,7 +10,6 @@ class Session {
 	public static function init() {
 		session_start();
 		if(time() - $_SESSION["LAST_ACTIVE"] > self::MAX_INACTIVITY) return self::destroy();
-		$_SESSION["LAST_ACTIVE"] = time();
 	}
 
 	public static function write(string $key, mixed $value) {
